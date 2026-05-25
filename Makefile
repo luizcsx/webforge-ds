@@ -12,18 +12,24 @@ NDSTOOL := /opt/devkitpro/tools/bin/ndstool
 ARCH    := -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
 FLAGS   := -DARM9 -D__NDS__
 
-INCLUDES := -I/opt/devkitpro/libnds/include -I./include
+INCLUDES := \
+    -I/opt/devkitpro/libnds/include \
+    -I/opt/devkitpro/calico/include \
+    -I./include
 
 CFLAGS   := -g -Wall -O2 $(ARCH) $(FLAGS) $(INCLUDES)
 CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions
 
-LIBDIRS := -L/opt/devkitpro/libnds/lib
-LIBS    := -lfat -lnds9
+LIBDIRS := \
+    -L/opt/devkitpro/libnds/lib \
+    -L/opt/devkitpro/calico/lib
+
+LIBS := -lfat -lnds9 -lcalico_ds9
 
 OBJS   := source/main.o
 TARGET := webforge-ds
 
-ARM7_BIN := /opt/devkitpro/calico/arm7/calico-default-arm7.elf
+ARM7_BIN := /opt/devkitpro/calico/bin/ds7_bobtail.elf
 
 SPECS := $(DEVKITARM)/arm-none-eabi/lib/ds_arm9.specs
 
