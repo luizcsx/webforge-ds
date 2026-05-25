@@ -9,8 +9,8 @@ OBJCOPY := $(PREFIX)objcopy
 
 NDSTOOL := /opt/devkitpro/tools/bin/ndstool
 
-ARCH    := -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
-FLAGS   := -DARM9 -D__NDS__
+ARCH  := -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
+FLAGS := -DARM9 -D__NDS__
 
 INCLUDES := \
     -I/opt/devkitpro/libnds/include \
@@ -24,14 +24,16 @@ LIBDIRS := \
     -L/opt/devkitpro/libnds/lib \
     -L/opt/devkitpro/calico/lib
 
-LIBS := -lfat -lnds9 -lcalico_ds9
+LIBS := -lnds9 -lcalico_ds9 -lfat
 
-OBJS   := source/main.o
-TARGET := webforge-ds
+OBJS := \
+    source/main.o \
+    source/vfs.o \
+    source/parser.o
 
+TARGET   := webforge-ds
 ARM7_BIN := /opt/devkitpro/calico/bin/ds7_bobtail.elf
-
-SPECS := $(DEVKITARM)/arm-none-eabi/lib/ds_arm9.specs
+SPECS    := $(DEVKITARM)/arm-none-eabi/lib/ds_arm9.specs
 
 all: $(TARGET).nds
 
