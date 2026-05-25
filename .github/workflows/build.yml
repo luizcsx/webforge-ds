@@ -15,33 +15,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install devkitPro Dependencies
+      - name: Install NDS toolchain
         run: |
-          dkp-pacman -Sy --noconfirm \
-            nds-dev \
-            calico
+          dkp-pacman -Sy --noconfirm nds-dev
 
-      - name: Diagnose devkitPro layout
+      - name: Diagnose environment
         run: |
-          echo "=== pacman packages ==="
-          dkp-pacman -Q | grep -E "calico|nds|libnds|libfat"
-        
-          echo "=== calico headers ==="
-          find /opt/devkitpro -name "calico.h" 2>/dev/null
-        
-          echo "=== calico libs ==="
-          find /opt/devkitpro -name "*.a" | grep -i calico
-        
-          echo "=== calico ARM7 binaries ==="
-          find /opt/devkitpro -name "*.elf" | grep -i calico
-        
-          echo "=== libnds includes ==="
-          ls /opt/devkitpro/libnds/include/
-        
-          echo "=== libnds libs ==="
-          ls /opt/devkitpro/libnds/lib/
+          echo "--- calico.h location ---"
+          find /opt/devkitpro -name "calico.h" 2>/dev/null || echo "NOT FOUND"
+          echo "--- ARM7 ELFs ---"
+          find /opt/devkitpro -name "*.elf" 2>/dev/null || echo "NONE"
+          echo "--- libnds libs ---"
+          ls /opt/devkitpro/libnds/lib/ 2>/dev/null || echo "NO LIBNDS"
 
-      - name: Compile NDS Binary
+      - name: Compile
         run: |
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM=$DEVKITPRO/devkitARM
