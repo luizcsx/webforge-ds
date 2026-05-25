@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------
-# WebForge DS - Official Infrastructure Build Configuration
+# WebForge DS - Official Infrastructure Build Configuration (Fixed)
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITARM)),)
@@ -16,10 +16,11 @@ OBJCOPY := $(PREFIX)objcopy
 NDSTOOL := $(DEVKITARM)/../tools/bin/ndstool
 
 ARCH    := -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
+FLAGS   := -DARM9 -D__NDS__
 
 INCLUDES := -I$(DEVKITARM)/../libnds/include -I./include
 
-CFLAGS   := -g -Wall -O2 $(ARCH) -DARM9 $(INCLUDES)
+CFLAGS   := -g -Wall -O2 $(ARCH) $(FLAGS) $(INCLUDES)
 CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS  := -g $(ARCH)
 
@@ -27,7 +28,6 @@ LIBDIRS  := -L$(DEVKITARM)/../libnds/lib
 LIBS     := -lfat -lnds9
 
 OBJS     := source/main.o
-
 TARGET   := webforge-ds
 
 all: $(TARGET).nds
@@ -41,10 +41,10 @@ $(TARGET).nds: $(TARGET).elf
 $(TARGET).elf: $(OBJS)
 	@$(CC) $(ARCH) -specs=ds_arm9.specs $(OBJS) $(LIBDIRS) $(LIBS) -o $(TARGET).elf
 
-%.o: %.cpp
+source/%.o: source/%.cpp
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
-%.o: %.c
+source/%.o: source/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
