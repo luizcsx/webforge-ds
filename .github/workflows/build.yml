@@ -1,4 +1,4 @@
-name: Build WebForge DS - DIAGNOSTIC
+name: Build WebForge DS
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  diagnose:
+  build:
     runs-on: ubuntu-latest
     container: devkitpro/devkitarm:latest
 
@@ -15,32 +15,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install nds-dev
-        run: dkp-pacman -Sy --noconfirm nds-dev
+      - name: Install NDS toolchain
+        run: dkp-pacman -Sy --noconfirm nds-dev calico
 
-      - name: Full Environment Diagnostic
+      - name: Compile
         run: |
-          echo "======= PACMAN INSTALLED ======="
-          dkp-pacman -Q
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=$DEVKITPRO/devkitARM
+          export PATH=$PATH:$DEVKITARM/bin:$DEVKITPRO/tools/bin
+          make clean
+          make
 
-          echo "======= FIND calico.h ======="
-          find /opt/devkitpro -name "calico.h" 2>/dev/null || echo "NOT FOUND"
-
-          echo "======= FIND *.a (calico) ======="
-          find /opt/devkitpro -name "*.a" | grep -i calico || echo "NOT FOUND"
-
-          echo "======= FIND *.elf ======="
-          find /opt/devkitpro -name "*.elf" 2>/dev/null || echo "NONE"
-
-          echo "======= libnds/include/ ======="
-          ls /opt/devkitpro/libnds/include/ || echo "DIR NOT FOUND"
-
-          echo "======= libnds/include/nds.h line 220-230 ======="
-          sed -n '220,230p' /opt/devkitpro/libnds/include/nds.h || echo "FILE NOT FOUND"
-
-          echo "======= /opt/devkitpro tree (2 levels) ======="
-          ls /opt/devkitpro/
-          echo "---"
-          ls /opt/devkitpro/libnds/ 2>/dev/null || echo "no libnds dir"
-          echo "---"
-          find /opt/devkitpro -maxdepth 3 -type d | sort
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webforge-ds-build
+          path: ./webforge-ds.nds
