@@ -24,16 +24,20 @@ LIBDIRS := \
     -L/opt/devkitpro/libnds/lib \
     -L/opt/devkitpro/calico/lib
 
-LIBS := -lnds9 -lcalico_ds9 -lfat
+LIBS := -Wl,--start-group -lnds9 -lfat -lcalico_ds9 -Wl,--end-group
 
 OBJS := \
     source/main.o \
     source/vfs.o \
-    source/parser.o
+    source/parser.o \
+    source/parser_per.o \
+    source/parser_sty.o \
+    source/parser_dsjs.o
 
 TARGET   := webforge-ds
 ARM7_BIN := /opt/devkitpro/calico/bin/ds7_bobtail.elf
-SPECS    := $(DEVKITARM)/arm-none-eabi/lib/ds_arm9.specs
+
+SPECS := libnds9.specs
 
 all: $(TARGET).nds
 
