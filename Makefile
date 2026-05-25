@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------
-# WebForge DS - Official Infrastructure Build Configuration (Pkg-Config Fix)
+# WebForge DS - Official Infrastructure Build Configuration (Absolute Path Fix)
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITARM)),)
@@ -13,20 +13,19 @@ AS      := $(PREFIX)as
 LD      := $(PREFIX)ld
 OBJCOPY := $(PREFIX)objcopy
 
-NDSTOOL := $(DEVKITARM)/../tools/bin/ndstool
-
-PKG_CONFIG := $(DEVKITARM)/../tools/bin/nds-pkg-config
+NDSTOOL := /opt/devkitpro/tools/bin/ndstool
 
 ARCH    := -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
+FLAGS   := -DARM9 -D__NDS__
 
-INCLUDES := $(shell $(PKG_CONFIG) --cflags libnds) -I./include
+INCLUDES := -I/opt/devkitpro/libnds/include -I./include
 
-CFLAGS   := -g -Wall -O2 $(ARCH) $(INCLUDES)
+CFLAGS   := -g -Wall -O2 $(ARCH) $(FLAGS) $(INCLUDES)
 CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS  := -g $(ARCH)
 
-LIBDIRS  := $(shell $(PKG_CONFIG) --libs libnds)
-LIBS     := -lfat
+LIBDIRS  := -L/opt/devkitpro/libnds/lib
+LIBS     := -lfat -lnds9
 
 OBJS     := source/main.o
 TARGET   := webforge-ds
@@ -35,7 +34,7 @@ all: $(TARGET).nds
 
 $(TARGET).nds: $(TARGET).elf
 	@$(OBJCOPY) -O binary $(TARGET).elf build_arm9.bin
-	@$(NDSTOOL) -c $(TARGET).nds -9 build_arm9.bin -7 $(DEVKITARM)/../libnds/default.arm7
+	@/opt/devkitpro/tools/bin/ndstool -c $(TARGET).nds -9 build_arm9.bin -7 /opt/devkitpro/libnds/default.arm7
 	@rm -f build_arm9.bin $(TARGET).elf source/*.o
 	@echo "[SUCCESS] $(TARGET).nds built successfully."
 
