@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------
-# WebForge DS - Official Infrastructure Build Configuration (Calico Patch)
+# WebForge DS - Official Infrastructure Build Configuration (Pkg-Config Fix)
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITARM)),)
@@ -15,19 +15,18 @@ OBJCOPY := $(PREFIX)objcopy
 
 NDSTOOL := $(DEVKITARM)/../tools/bin/ndstool
 
+PKG_CONFIG := $(DEVKITARM)/../tools/bin/nds-pkg-config
+
 ARCH    := -mthumb -mthumb-interwork -march=armv5te -mtune=arm946e-s
-FLAGS   := -DARM9 -D__NDS__
 
-INCLUDES := -I$(DEVKITARM)/../libnds/include \
-            -I$(DEVKITARM)/../libcalico/include \
-            -I./include
+INCLUDES := $(shell $(PKG_CONFIG) --cflags libnds) -I./include
 
-CFLAGS   := -g -Wall -O2 $(ARCH) $(FLAGS) $(INCLUDES)
+CFLAGS   := -g -Wall -O2 $(ARCH) $(INCLUDES)
 CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS  := -g $(ARCH)
 
-LIBDIRS  := -L$(DEVKITARM)/../libnds/lib -L$(DEVKITARM)/../libcalico/lib
-LIBS     := -lfat -lcalico -lnds9
+LIBDIRS  := $(shell $(PKG_CONFIG) --libs libnds)
+LIBS     := -lfat
 
 OBJS     := source/main.o
 TARGET   := webforge-ds
