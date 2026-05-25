@@ -21,6 +21,26 @@ jobs:
             nds-dev \
             calico
 
+      - name: Diagnose devkitPro layout
+        run: |
+          echo "=== pacman packages ==="
+          dkp-pacman -Q | grep -E "calico|nds|libnds|libfat"
+        
+          echo "=== calico headers ==="
+          find /opt/devkitpro -name "calico.h" 2>/dev/null
+        
+          echo "=== calico libs ==="
+          find /opt/devkitpro -name "*.a" | grep -i calico
+        
+          echo "=== calico ARM7 binaries ==="
+          find /opt/devkitpro -name "*.elf" | grep -i calico
+        
+          echo "=== libnds includes ==="
+          ls /opt/devkitpro/libnds/include/
+        
+          echo "=== libnds libs ==="
+          ls /opt/devkitpro/libnds/lib/
+
       - name: Compile NDS Binary
         run: |
           export DEVKITPRO=/opt/devkitpro
