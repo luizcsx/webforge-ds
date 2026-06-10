@@ -1,7 +1,7 @@
 # WebForge DS
 
-![GitHub repo size](https://img.shields.io/github/repo-size/luizcsx/webforge-ds?style=flat-square)
-![GitHub license](https://img.shields.io/github/license/luizcsx/webforge-ds?style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/luizcsx/webforge-ds?style=flat)
+![GitHub license](https://img.shields.io/github/license/luizcsx/webforge-ds?style=flat)
 
 A custom operating system and lightweight web ecosystem designed specifically for the **Nintendo DS**.
 
